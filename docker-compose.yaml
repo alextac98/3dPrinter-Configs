@@ -1,0 +1,17 @@
+services:
+  klipper:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: klipper-test:latest
+    volumes:
+      - ./configs:/configs:ro
+      - ./tmp:/tmp
+    command: >
+      python3 klippy/klippy.py
+      /configs/Hazard/hazard.cfg
+      -l /tmp/klippy.log
+      -a /tmp/klippy_uds/klippy.sock
+    environment:
+      - PYTHONUNBUFFERED=1
+    tty: true
