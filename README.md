@@ -2,8 +2,41 @@
 
 This repo keeps the configs for all my personal 3D printers.
 
-## Initial Installations
+## Repo Setup Instructions
 
+When making this repo for the first time on a new device, there's a few setup steps you'll need to do:
+
+```shell
+# Set up python environment
+python -m venv .venv
+source .venv/bin/activate
+
+# Install Ansible
+pip install ansible
+```
+
+## New Device Setup Instructions
+
+```shell
+# Install general requirements
+ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "global" -K
+
+# Install Klipper
+ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "klipper" -K
+
+# Install Moonraker
+
+# Install Fluidd
+
+# Install Klipper-Screen
+
+# Install Crowsnest
+
+
+```
+
+
+## Flashing Firmware
 
 ## Development Instructions
 

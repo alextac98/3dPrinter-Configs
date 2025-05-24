@@ -1,0 +1,25 @@
+---
+- name: Restart Klipper
+  ansible.builtin.systemd:
+    name: klipper
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  notify: Verify Config
+  when: not printer_active_print
+  become: true
+  tags:
+    - klipper
+
+- name: Verify Config
+  ansible.builtin.uri:
+    url: 'http://{{ ansible_host }}:7125/printer'
+    method: GET
+    return_content: true
+    status_code: 200
+    force: true
+  check_mode: false
+  failed_when: printer_status.json.state.flags.error
+  register: printer_status
+  tags:
+    - klipper

@@ -1,0 +1,19 @@
+---
+- name: General Klipper Setup
+  hosts: all
+  roles:
+    - global
+    - klipper
+    - klipper-config
+    - moonraker
+    - fluidd
+
+- name: Camera Setup
+  hosts: cameras
+  roles:
+    - crowsnest
+
+- name: Touchscreen Setup
+  hosts: touchscreens
+  roles:
+    - klipper-screen

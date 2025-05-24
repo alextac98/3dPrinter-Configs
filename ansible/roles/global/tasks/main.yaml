@@ -1,0 +1,74 @@
+---
+- name: Configure Facts
+  ansible.builtin.include_tasks:
+    file: set-facts.yaml
+  tags:
+    - global
+    - klipper
+    - klipper-config
+    - moonraker
+    - fluidd
+    - klipper-screen
+
+- name: Create Directories
+  ansible.builtin.file:
+    name: '{{ item }}'
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  become: true
+  tags:
+    - global
+  with_items:
+    - '{{ printer_path }}'
+    - '{{ printer_data_path }}'
+    - '{{ printer_data_path }}/comms'
+    - '{{ printer_data_path }}/config'
+    - '{{ printer_data_path }}/logs'
+    - '{{ printer_data_path }}/systemd'
+
+- name: Upgrade All Packages
+  ansible.builtin.apt:
+    autoremove: false
+    update_cache: false
+    cache_valid_time: 86400 # 1 Day
+    name: "*"
+    state: present
+  become: false
+  tags:
+    - global
+
+- name: Install Common Packages
+  ansible.builtin.apt:
+    name:
+      - vim
+      - git
+      - curl
+      - btop
+      - htop
+    state: present
+    update_cache: false
+  become: true
+  tags:
+    - global
+
+- name: Check if Reboot is Required
+  ansible.builtin.stat:
+    path: /var/run/reboot-required
+  register: reboot
+  tags:
+    - global
+
+- name: Reboot
+  ansible.builtin.reboot:
+    msg: "Reboot By Ansible"
+    connect_timeout: 5
+    reboot_timeout: 300 # 5 Minutes
+    pre_reboot_delay: 0 # Reboot Immediately
+    post_reboot_delay: 30
+    test_command: uptime
+  become: true
+  tags:
+    - global
+  when: reboot.stat.exists and not printer_active_print

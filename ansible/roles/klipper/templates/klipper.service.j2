@@ -1,0 +1,26 @@
+######################################################################
+# Ansible Managed File
+######################################################################
+# This file is managed via Ansible. Direct modifications will be lost
+#   on the next execution of Ansible.
+######################################################################
+
+[Unit]
+Description=Klipper 3D Printer Firmware SV1
+Documentation=https://www.klipper3d.org/
+After=network-online.target
+Before=moonraker.service
+Wants=udev.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User={{ ansible_user }}
+RemainAfterExit=yes
+WorkingDirectory={{ klipper_path }}
+EnvironmentFile={{ printer_data_path }}/systemd/klipper.env
+ExecStart={{ klipper_env_path }}/bin/python $KLIPPER_ARGS
+Restart=always
+RestartSec=10

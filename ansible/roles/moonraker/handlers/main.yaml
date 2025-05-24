@@ -1,0 +1,11 @@
+---
+- name: Restart Moonraker
+  ansible.builtin.systemd:
+    name: moonraker
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  when: not printer_active_print
+  become: true
+  tags:
+    - moonraker

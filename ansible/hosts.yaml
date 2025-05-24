@@ -1,0 +1,24 @@
+---
+all:
+  hosts:
+    Hazard:
+      ansible_host: hazard.printer.alextac.com
+      ansible_user: hazard
+    Spoiler:
+      ansible_host: spoiler.printer.alextac.com
+      ansible_user: spoiler
+    Bullet:
+      ansible_host: bullet.printer.alextac.com
+      ansible_user: bullet
+  children:
+    printers:
+      hosts:
+        Hazard:
+        Spoiler:
+        Bullet:
+    cameras:
+      hosts:
+        Hazard:
+    touchscreens:
+      hosts:
+        Spoiler:
