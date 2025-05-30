@@ -1,35 +1,20 @@
 ---
-- name: Create Config Directories
-  ansible.builtin.file:
-    name: '{{ item }}'
-    state: directory
-    mode: '0755'
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  tags:
-    - klipper-config
-  with_items:
-    - '{{ klipper_cfg_path }}/{{ inventory_hostname }}'
-    - '{{ klipper_cfg_path }}/Macros'
-
 - name: Copy Printer Configuration
   ansible.posix.synchronize:
-    src: "./../../../../configs/{{ inventory_hostname }}"
-    dest: "{{ klipper_cfg_path }}/"
+    src: "./../../../../"
+    dest: "{{ cfg_repo_path }}/"
+    rsync_opts:
+      - "--exclude=.venv"
+      - "--exclude=.ansible"
+      - "--exclude=tmp"
   notify: Restart Klipper
   tags:
     - klipper-config
 
-- name: Copy Macros Configuration
-  ansible.posix.synchronize:
-    src: "./../../../../configs/Macros"
-    dest: "{{ klipper_cfg_path }}/"
-  tags:
-    - klipper-config
-
-- name: Copy Fluidd Configuration
-  ansible.posix.synchronize:
-    src: "./../../../../configs/fluidd.cfg"
-    dest: "{{ klipper_cfg_path }}/fluidd.cfg"
+- name: Symlink Printer Configuration
+  ansible.builtin.file:
+    src: "{{ cfg_repo_path }}/configs"
+    dest: "{{ printer_data_path }}/config"
+    state: link
   tags:
     - klipper-config

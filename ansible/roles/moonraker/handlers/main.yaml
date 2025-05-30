@@ -5,7 +5,7 @@
     enabled: true
     daemon_reload: true
     state: restarted
-  when: not printer_active_print
+  # when: not printer_active_print
   become: true
   tags:
     - moonraker

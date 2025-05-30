@@ -10,35 +10,6 @@
     - fluidd
     - klipper-screen
 
-- name: Create Directories
-  ansible.builtin.file:
-    name: '{{ item }}'
-    state: directory
-    mode: '0755'
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  become: true
-  tags:
-    - global
-  with_items:
-    - '{{ printer_path }}'
-    - '{{ printer_data_path }}'
-    - '{{ printer_data_path }}/comms'
-    - '{{ printer_data_path }}/config'
-    - '{{ printer_data_path }}/logs'
-    - '{{ printer_data_path }}/systemd'
-
-- name: Upgrade All Packages
-  ansible.builtin.apt:
-    autoremove: false
-    update_cache: false
-    cache_valid_time: 86400 # 1 Day
-    name: "*"
-    state: present
-  become: false
-  tags:
-    - global
-
 - name: Install Common Packages
   ansible.builtin.apt:
     name:
@@ -71,4 +42,5 @@
   become: true
   tags:
     - global
-  when: reboot.stat.exists and not printer_active_print
+  when: reboot.stat.exists
+  # when: reboot.stat.exists and not printer_active_print

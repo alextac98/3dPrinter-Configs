@@ -1,60 +1,9 @@
 ---
-- name: Install Packages for Klipper
-  ansible.builtin.package:
-    name:
-      - virtualenv
-      - python3-dev
-      - libffi-dev
-      - build-essential
-      - libncurses-dev
-      - libusb-dev
-      - avrdude
-      - gcc-avr
-      - binutils-avr
-      - avr-libc
-      - stm32flash
-      - libnewlib-arm-none-eabi
-      - gcc-arm-none-eabi
-      - binutils-arm-none-eabi
-      - libusb-1.0-0-dev
-      - pkg-config
-      - dfu-util
-  become: true
-  tags:
-    - klipper
-
-- name: Download Repository
-  ansible.builtin.git:
-    repo: https://github.com/Klipper3d/klipper.git
-    version: master
-    dest: '{{ klipper_path }}'
-  notify: Restart Klipper
-  tags:
-    - klipper
-
-- name: Set Up Virtual Environment
-  ansible.builtin.pip:
-    virtualenv: '{{ klipper_env_path }}'
-    requirements: '{{ klipper_path }}/scripts/klippy-requirements.txt'
-  notify: Restart Klipper
-  tags:
-    - klipper
-
 - name: Configure Service Environment Variables
   ansible.builtin.template:
     src: klipper.env.j2
     dest: '{{ printer_data_path }}/systemd/klipper.env'
     mode: '0644'
-  notify: Restart Klipper
-  tags:
-    - klipper
-
-- name: Configure Service
-  ansible.builtin.template:
-    src: klipper.service.j2
-    dest: '/etc/systemd/system/klipper.service'
-    mode: '0644'
-  become: true
   notify: Restart Klipper
   tags:
     - klipper

@@ -1,60 +1,9 @@
 ---
-- name: Install Packages for Moonraker
-  ansible.builtin.package:
-    name:
-      - python3-virtualenv
-      - python3-dev
-      - libopenjp2-7
-      - libsodium-dev
-      - zlib1g-dev
-      - libjpeg-dev
-      - packagekit
-      - wireless-tools
-      - build-essential
-  become: true
-  tags:
-    - moonraker
-
-- name: Download Moonraker Repository
-  ansible.builtin.git:
-    repo: https://github.com/Arksine/moonraker.git
-    version: master
-    dest: '{{ moonraker_path }}'
-  tags:
-    - moonraker
-
-- name: Set Up Moonraker Virtual Environment
-  ansible.builtin.pip:
-    virtualenv: '{{ moonraker_env_path }}'
-    requirements: '{{ moonraker_path }}/scripts/moonraker-requirements.txt'
-  notify: Restart Moonraker
-  tags:
-    - moonraker
-
-- name: Configure Moonraker Admin Group
-  ansible.builtin.group:
-    name: moonraker-admin
-    state: present
-    system: true
-  become: true
-  tags:
-    - moonraker
-
 - name: Configure Moonraker Service Environment Variables
   ansible.builtin.template:
     src: moonraker.env.j2
     dest: '{{ printer_data_path }}/systemd/moonraker.env'
     mode: '0644'
-  notify: Restart Moonraker
-  tags:
-    - moonraker
-
-- name: Configure Moonraker Service
-  ansible.builtin.template:
-    src: moonraker.service.j2
-    dest: '/etc/systemd/system/moonraker.service'
-    mode: '0644'
-  become: true
   notify: Restart Moonraker
   tags:
     - moonraker

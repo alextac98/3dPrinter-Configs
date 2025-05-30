@@ -7,74 +7,71 @@
     - klipper
     - klipper-config
     - moonraker
-    - fluidd
-    - klipper-screen
   when: ansible_user is not defined
+
+- name: Set Printer Directory Path
+  ansible.builtin.set_fact:
+    printer_path: "/home/{{ ansible_user }}"
+  tags:
+    - global
+    - klipper
+    - klipper-config
+    - moonraker
+
 - name: Set Directory Paths
   ansible.builtin.set_fact:
-    printer_path: "/printer/"
-    printer_data_path: /printer/printer_data
-    klipper_path: /printer/klipper
-    klipper_env_path: /printer/klippy_env
-    moonraker_path: /printer/moonraker
-    moonraker_env_path: /printer/moonraker_env
+    printer_data_path: "{{ printer_path }}/printer_data"
+    klipper_path: "{{ printer_path }}/klipper"
+    klipper_env_path: "{{ printer_path }}/klippy_env"
+    moonraker_path: "{{ printer_path }}/moonraker"
+    moonraker_env_path: "{{ printer_path }}/moonraker_env"
+    klipperscreen_path: "{{ printer_path }}/klipper_screen"
+    klipperscreen_env_path: "{{ printer_path }}/klipper_screen_env"
+    cfg_repo_path: "{{ printer_path }}/printer_configs"
   tags:
     - global
     - klipper
     - klipper-config
     - moonraker
-    - fluidd
-    - klipper-screen
-- name: Retrieve Current Printer Status
-  ansible.builtin.uri:
-    url: "http://{{ ansible_host }}:7125/printer"
-    method: GET
-    return_content: true
-    status_code: 200
-    force: false
-  check_mode: false
-  ignore_errors: true
-  register: printer_status
-  tags:
-    - global
-    - klipper
-    - klipper-config
-    - moonraker
-    - fluidd
-    - klipper-screen
-- name: Register Current Printer Status
-  ansible.builtin.set_fact:
-    printer_active_print: "{{ printer_status.json.state.flags.printing or printer_status.json.state.flags.paused or printer_status.json.state.flags.pausing }}"
-  tags:
-    - global
-    - klipper
-    - klipper-config
-    - moonraker
-    - fluidd
-    - klipper-screen
-  when: printer_status.status == 200
-
-- name: Register Current Printer Status
-  ansible.builtin.set_fact:
-    printer_active_print: "false"
-  tags:
-    - global
-    - klipper
-    - klipper-config
-    - moonraker
-    - fluidd
-    - klipper-screen
-  when: printer_status.status != 200
 
 - name: Configure File Paths
   ansible.builtin.set_fact:
-    klipper_cfg_path: "{{ printer_data_path }}/configs"
-    printer_cfg_path: "{{ printer_data_path }}/configs/{{ inventory_hostname }}/printer.cfg"
-    moonraker_cfg_path: "{{ printer_data_path }}/configs/{{ inventory_hostname }}/moonraker.conf"
+    printer_cfg_path: "{{ cfg_repo_path }}/configs/{{ inventory_hostname }}"
   tags:
     - global
     - klipper
     - klipper-config
     - moonraker
-    - fluidd
-    - klipper-screen
+
+# - name: Retrieve Current Printer Status
+#   ansible.builtin.uri:
+#     url: "http://{{ ansible_host }}:7125/server/info"
+#     method: GET
+#     return_content: true
+#     status_code: 200
+#     force: false
+#   check_mode: false
+#   ignore_errors: true
+#   register: printer_status
+#   tags:
+#     - global
+#     - klipper
+#     - klipper-config
+
+# - name: Register Current Printer Status
+#   ansible.builtin.set_fact:
+#     printer_active_print: "{{ result.klippy_state == 'printing' or result.klippy_state == 'paused' or result.klippy_state == 'pausing' }}"
+#   tags:
+#     - global
+#     - klipper
+#     - klipper-config
+#   when: printer_status.status == 200
+
+# - name: Register Current Printer Status
+#   ansible.builtin.set_fact:
+#     printer_active_print: "false"
+#   tags:
+#     - global
+#     - klipper
+#     - klipper-config
+#   when: printer_status.status != 200

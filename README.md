@@ -1,6 +1,6 @@
 # 3D Printer Configs
 
-This repo keeps the configs for all my personal 3D printers.
+This repo keeps the configs for all my personal 3D printers. The intent is to have the repo stored on each of the devices in a public place (`~/printer-configs`) and then point Klipper to the new location.
 
 ## Repo Setup Instructions
 
@@ -17,24 +17,42 @@ pip install ansible
 
 ## New Device Setup Instructions
 
-```shell
-# Install general requirements
+1. Start with the initial script:
+
+```bash
 ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "global" -K
-
-# Install Klipper
-ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "klipper" -K
-
-# Install Moonraker
-
-# Install Fluidd
-
-# Install Klipper-Screen
-
-# Install Crowsnest
-
-
 ```
 
+2. Install all required projects. The easiest way to install all the tools is [Kiauh](https://github.com/dw-0/kiauh), which has scripts to install all commonly used systems. For each of the devices, here are the things I installed (in order):
+
+* Spoiler
+  * Klipper
+  * Moonraker
+  * Fluidd
+  * Klipper-Screen
+  * Crowsnest
+* Hazard
+  * Klipper
+  * Moonraker
+  * Fluidd
+  * Crowsnest
+* Bullet
+  * Klipper
+  * Moonraker
+  * Fluidd
+
+3. Install firmware (jump to Flashing Firmware section)
+
+4. Set up configs by running the klipper-config ansible script:
+
+```bash
+ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "klipper"
+ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "klipper-config" -K
+```
+
+> **_NOTE:_** 
+>
+> It is possible to do all of this with Ansible. However it was getting very complicated to do so since a lot of the startup scripts require interaction. Therefore, I decided to make it easy on me and do the install step manually.
 
 ## Flashing Firmware
 
