@@ -73,3 +73,4 @@ Logs will live in `tmp/klippy.log`.
 ## References and Links
 * https://www.klipper3d.org/Installation.html
 * https://github.com/dw-0/kiauh
+* https://canbus.esoterical.online/
