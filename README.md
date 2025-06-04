@@ -56,6 +56,8 @@ ansible-playbook -i ansible/hosts.yaml -l Spoiler ansible/install.yaml --tags "k
 
 ## Flashing Firmware
 
+The best way to flash firmware is to follow the instructions here: https://canbus.esoterical.online/
+
 ## Development Instructions
 
 Docker can be used to validate configurations before they are pushed to the representative printer. To do so, follow the instructions below:
@@ -74,3 +76,4 @@ Logs will live in `tmp/klippy.log`.
 * https://www.klipper3d.org/Installation.html
 * https://github.com/dw-0/kiauh
 * https://canbus.esoterical.online/
+* https://github.com/MakerBogans/docs/wiki/TMC-Driver-Tuning
