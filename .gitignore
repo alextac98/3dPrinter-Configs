@@ -2,3 +2,5 @@
 tmp/
 .venv
 .ansible/
+
+shaper_tmp/
