@@ -7,7 +7,14 @@
     - klipper
     - klipper-config
     - moonraker
+    - crowsnest
   when: ansible_user is not defined
+
+- name: Set Ansible Hostname
+  ansible.builtin.set_fact:
+    ansible_hostname: "{{ hostname }}"
+  tags:
+    - global
 
 - name: Set Printer Directory Path
   ansible.builtin.set_fact:
@@ -17,6 +24,7 @@
     - klipper
     - klipper-config
     - moonraker
+    - crowsnest
 
 - name: Set Directory Paths
   ansible.builtin.set_fact:
@@ -33,6 +41,7 @@
     - klipper
     - klipper-config
     - moonraker
+    - crowsnest
 
 - name: Configure File Paths
   ansible.builtin.set_fact:
@@ -42,6 +51,7 @@
     - klipper
     - klipper-config
     - moonraker
+    - crowsnest
 
 # - name: Retrieve Current Printer Status
 #   ansible.builtin.uri:

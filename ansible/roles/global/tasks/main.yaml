@@ -9,6 +9,7 @@
     - moonraker
     - fluidd
     - klipper-screen
+    - crowsnest
 
 - name: Install Common Packages
   ansible.builtin.apt:
@@ -18,8 +19,51 @@
       - curl
       - btop
       - htop
+      - python3-serial
     state: present
     update_cache: false
+  become: true
+  tags:
+    - global
+
+- name: Set Hostname
+  ansible.builtin.hostname:
+    name: "{{ ansible_hostname }}"
+  become: true
+  tags:
+    - global
+
+- name: Enable systemd-networkd
+  ansible.builtin.systemd:
+    name: systemd-networkd
+    enabled: true
+    state: started
+  become: true
+  tags:
+    - global
+
+- name: Disable systemd-networkd-wait-online.service
+  ansible.builtin.systemd:
+    name: systemd-networkd-wait-online.service
+    enabled: false
+  become: true
+  tags:
+    - global
+
+- name: Create CAN udev rules
+  ansible.builtin.template:
+    src: 10-can.rules.j2
+    dest: /etc/udev/rules.d/10-can.rules
+    mode: '0644'
+  become: true
+  tags:
+    - global
+
+- name: Create CAN network configuration
+  ansible.builtin.template:
+    src: 25-can.network.j2
+    dest: /etc/systemd/network/25-can.network
+    mode: '0644'
   become: true
   tags:
     - global

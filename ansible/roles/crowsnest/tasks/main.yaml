@@ -1,0 +1,9 @@
+---
+- name: Configure Crowsnest Service Environment Variables
+  ansible.builtin.template:
+    src: crowsnest.env.j2
+    dest: '{{ printer_data_path }}/systemd/crowsnest.env'
+    mode: '0644'
+  notify: Restart Crowsnest
+  tags:
+    - crowsnest

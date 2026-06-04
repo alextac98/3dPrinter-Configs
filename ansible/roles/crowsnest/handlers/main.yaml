@@ -1,0 +1,10 @@
+---
+- name: Restart Crowsnest
+  ansible.builtin.systemd:
+    name: crowsnest
+    enabled: true
+    daemon_reload: true
+    state: restarted
+  become: true
+  tags:
+    - crowsnest

@@ -1,4 +1,12 @@
 ---
+- name: Download Kiuah
+  ansible.builtin.git:
+    repo: 'https://github.com/dw-0/kiauh'
+    dest: '{{ printer_path }}/kiauh'
+    version: 'master'
+  tags:
+    - klipper
+
 - name: Configure Service Environment Variables
   ansible.builtin.template:
     src: klipper.env.j2
